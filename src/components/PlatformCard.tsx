@@ -67,21 +67,26 @@ export function PlatformCard(props: PlatformCardProps) {
     report.findings.length === 0
       ? h(
           "div",
-          { className: "mt-4 rounded-xl bg-slate-50 px-4 py-7 text-center" },
+          { className: "mt-3 rounded-xl bg-slate-50 px-4 py-4 text-center" },
           h(
             "span",
             {
               className:
-                "mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100 text-base font-bold text-emerald-700",
+                "mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-base font-bold text-emerald-700",
               "aria-hidden": true,
             },
             "✓",
           ),
-          h("p", { className: "mt-2.5 text-sm text-slate-600" }, "No findings on this platform."),
+          h("p", { className: "mt-2 text-sm text-slate-600" }, "No findings on this platform."),
         )
       : h(
           "ul",
-          { className: "mt-4 grid gap-3 xl:grid-cols-2" },
+          {
+            className:
+              report.findings.length > 1
+                ? "mt-3 grid gap-3 sm:grid-cols-2 xl:max-h-[540px] xl:overflow-y-auto xl:pr-1"
+                : "mt-3 space-y-3 xl:max-h-[540px] xl:overflow-y-auto xl:pr-1",
+          },
           ...report.findings.map((finding, index) => h(FindingRow, { key: index, finding, index })),
         );
 
@@ -90,7 +95,7 @@ export function PlatformCard(props: PlatformCardProps) {
     {
       "data-testid": "platform-card",
       "data-platform": report.platform,
-      className: "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6",
+      className: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm",
     },
     h(
       "div",
@@ -98,10 +103,10 @@ export function PlatformCard(props: PlatformCardProps) {
       h(
         "div",
         null,
-        h("h3", { className: "text-lg font-bold text-slate-900" }, label),
+        h("h3", { className: "text-base font-bold text-slate-900" }, label),
         h(
           "p",
-          { className: "mt-0.5 text-sm text-slate-500" },
+          { className: "mt-0.5 text-xs leading-5 text-slate-500" },
           PLATFORM_SUBTITLES[report.platform] ?? report.platform,
         ),
       ),
@@ -111,7 +116,7 @@ export function PlatformCard(props: PlatformCardProps) {
         h(
           "p",
           { className: "flex items-baseline justify-end gap-2" },
-          h("span", { className: "text-3xl font-bold text-slate-900" }, report.safety_score),
+          h("span", { className: "text-2xl font-bold text-slate-900" }, report.safety_score),
           h("span", { className: "text-sm font-medium text-slate-400" }, "/ 100"),
           h(
             "span",
@@ -125,7 +130,7 @@ export function PlatformCard(props: PlatformCardProps) {
         ),
         h(
           "div",
-          { className: "mt-2 h-1.5 w-44 rounded-full bg-slate-100", "aria-hidden": true },
+          { className: "mt-2 h-1.5 w-32 rounded-full bg-slate-100", "aria-hidden": true },
           h("div", {
             className: "h-1.5 rounded-full bg-blue-600",
             style: { width: `${Math.min(100, Math.max(0, report.safety_score))}%` },
@@ -135,10 +140,10 @@ export function PlatformCard(props: PlatformCardProps) {
     ),
     h(
       "div",
-      { className: "mt-4 flex flex-wrap items-center gap-x-6 gap-y-2" },
+      { className: "mt-3 flex flex-wrap items-center gap-x-5 gap-y-2" },
       h(
         "p",
-        { className: "flex items-center gap-2 text-sm" },
+        { className: "flex items-center gap-2 text-[13px]" },
         h("span", { className: "font-medium text-slate-500" }, "Status"),
         h(
           "span",
@@ -150,7 +155,7 @@ export function PlatformCard(props: PlatformCardProps) {
       ),
       h(
         "p",
-        { className: "text-sm" },
+        { className: "text-[13px] leading-5" },
         h("span", { className: "font-medium text-slate-500" }, "Top risk: "),
         h("span", { className: "text-slate-700" }, report.top_risk),
       ),

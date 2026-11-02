@@ -7,6 +7,46 @@ const SEVERITY_LABELS: Record<string, string> = {
   tinggi: "High",
 };
 
+// Category values in the data are stable machine codes (frozen contract).
+// The UI shows a human label; the code stays visible in small print so a
+// finding can always be traced back to the rule data it came from.
+const CATEGORY_LABELS: Record<string, string> = {
+  endorsement_tanpa_pengungkapan: "Undisclosed endorsement",
+  grafis_medis: "Medical graphic content",
+  hoaks: "Hoax",
+  judi: "Gambling",
+  judi_online: "Online gambling",
+  kekerasan: "Violence",
+  keselamatan_anak: "Child safety",
+  kesusilaan_pornografi: "Decency and pornography",
+  klaim_menyesatkan_produk_investasi: "Misleading product or investment claims",
+  klip_pihak_ketiga: "Third-party clip",
+  logo_merek_dominan: "Dominant brand logo",
+  misinformasi: "Misinformation",
+  musik_komersial: "Commercial music",
+  narkoba_alkohol_senjata: "Drugs, alcohol, and weapons",
+  pencemaran_nama_baik: "Defamation",
+  perilaku_berbahaya: "Dangerous behavior",
+  perundungan: "Bullying",
+  privasi_data_pribadi: "Privacy and personal data",
+  provokasi_kekerasan_terorisme: "Incitement to violence and terrorism",
+  reupload_tanpa_transformasi: "Reupload without transformation",
+  seksual: "Sexual content",
+  spam_clickbait_reupload: "Spam, clickbait, and reupload",
+  stok_berlisensi: "Licensed stock material",
+  teks_lirik_berhak_cipta: "Copyrighted lyrics or text",
+  ujaran_kebencian: "Hate speech",
+  ujaran_kebencian_sara: "Hate speech (SARA)",
+  watermark_platform_lain: "Another platform's watermark",
+};
+
+function categoryLabel(category: string): string {
+  const known = CATEGORY_LABELS[category];
+  if (known) return known;
+  const spaced = category.replace(/_/g, " ").trim();
+  return spaced ? spaced.charAt(0).toUpperCase() + spaced.slice(1) : category;
+}
+
 const SEVERITY_CLASSES: Record<string, string> = {
   rendah: "bg-slate-100 text-slate-600",
   sedang: "bg-amber-100 text-amber-800",
@@ -31,7 +71,7 @@ export function FindingRow({ finding, index }: { finding: Finding; index: number
   const key = `${finding.category}-${finding.start_sec}-${finding.end_sec}-${index}`;
   return h(
     "li",
-    { key, className: "rounded-xl border border-slate-200 bg-white p-4" },
+    { key, className: "rounded-xl border border-slate-200 bg-white p-3" },
     h(
       "div",
       { className: "flex flex-wrap items-center gap-x-2.5 gap-y-1.5" },
@@ -42,7 +82,12 @@ export function FindingRow({ finding, index }: { finding: Finding; index: number
         },
         SEVERITY_LABELS[finding.severity] ?? finding.severity,
       ),
-      h("span", { className: "text-sm font-semibold text-slate-900" }, finding.category),
+      h(
+        "span",
+        { className: "min-w-0" },
+        h("span", { className: "block truncate text-sm font-semibold text-slate-900" }, categoryLabel(finding.category)),
+        h("span", { className: "block font-mono text-[11px] text-slate-400" }, finding.category),
+      ),
       h(
         "span",
         {
@@ -52,16 +97,16 @@ export function FindingRow({ finding, index }: { finding: Finding; index: number
         rangeLabel(finding),
       ),
     ),
-    h("p", { className: "mt-2 text-sm leading-6 text-slate-700" }, finding.impact),
+    h("p", { className: "mt-2 text-[13px] leading-5 text-slate-700" }, finding.impact),
     h(
       "p",
-      { className: "mt-2.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm leading-6 text-slate-600" },
+      { className: "mt-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[13px] leading-5 text-slate-600" },
       h("span", { className: "font-medium text-slate-500" }, "Evidence: "),
       finding.evidence,
     ),
     h(
       "p",
-      { className: "mt-2.5 text-sm leading-6 text-slate-700" },
+      { className: "mt-2 text-[13px] leading-5 text-slate-700" },
       h("span", { className: "font-semibold text-slate-900" }, "Fix: "),
       finding.fix,
     ),

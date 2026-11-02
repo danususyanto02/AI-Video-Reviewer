@@ -33,21 +33,26 @@ export function RiskCard(props: RiskCardProps) {
     findings.length === 0
       ? h(
           "div",
-          { className: "mt-4 rounded-xl bg-slate-50 px-4 py-7 text-center" },
+          { className: "mt-3 rounded-xl bg-slate-50 px-4 py-4 text-center" },
           h(
             "span",
             {
               className:
-                "mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100 text-base font-bold text-emerald-700",
+                "mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-base font-bold text-emerald-700",
               "aria-hidden": true,
             },
             "✓",
           ),
-          h("p", { className: "mt-2.5 text-sm text-slate-600" }, "No findings in this section."),
+          h("p", { className: "mt-2 text-sm text-slate-600" }, "No findings in this section."),
         )
       : h(
           "ul",
-          { className: "mt-4 grid gap-3 xl:grid-cols-2" },
+          {
+            className:
+              findings.length > 1
+                ? "mt-3 grid gap-3 sm:grid-cols-2 xl:max-h-[460px] xl:overflow-y-auto xl:pr-1"
+                : "mt-3 space-y-3 xl:max-h-[460px] xl:overflow-y-auto xl:pr-1",
+          },
           ...findings.map((finding, index) => h(FindingRow, { key: index, finding, index })),
         );
 
@@ -55,7 +60,7 @@ export function RiskCard(props: RiskCardProps) {
     "article",
     {
       "data-testid": "risk-card",
-      className: "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6",
+      className: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm",
     },
     h(
       "div",
@@ -63,9 +68,9 @@ export function RiskCard(props: RiskCardProps) {
       h(
         "div",
         null,
-        h("h3", { className: "text-lg font-bold text-slate-900" }, props.title),
+        h("h3", { className: "text-base font-bold text-slate-900" }, props.title),
         props.subtitle
-          ? h("p", { className: "mt-0.5 text-sm text-slate-500" }, props.subtitle)
+          ? h("p", { className: "mt-0.5 text-xs leading-5 text-slate-500" }, props.subtitle)
           : null,
       ),
       h(

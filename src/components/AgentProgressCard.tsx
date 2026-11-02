@@ -11,6 +11,7 @@ type AgentStatusEntry = {
 };
 
 export type AgentProgressCardProps = {
+  compact?: boolean;
   progress?: AgentProgress;
   agentProgress?: AgentProgress;
   agentStatus?: AgentStatusEntry;
@@ -29,12 +30,12 @@ const AGENT_LABELS: Record<string, string> = {
 };
 
 const AGENT_DESCRIPTIONS: Record<string, string> = {
-  youtube: "Checks YouTube Community Guidelines.",
-  tiktok: "Checks TikTok Community Guidelines.",
-  facebook: "Checks Facebook Community Standards.",
-  copyright: "Scans for copyrighted audio and visuals.",
-  legal_id: "Checks Indonesian legal risk themes.",
-  packaging_privacy: "Reviews packaging claims and privacy.",
+  youtube: "YouTube Community Guidelines and the advertiser-friendly rules.",
+  tiktok: "TikTok Community Guidelines, including branded content.",
+  facebook: "Facebook Community Standards.",
+  copyright: "Background music and other people's clips. Possible matches, flagged with timestamps.",
+  legal_id: "Indonesian consumer law and UU ITE: health claims, endorsements, defamation.",
+  packaging_privacy: "Title, caption and thumbnail. Plus faces, names and personal data on screen.",
 };
 
 const PILL_TEXT: Record<AgentProgressState, string> = {
@@ -153,14 +154,23 @@ export function AgentProgressCard(props: AgentProgressCardProps) {
   const resolved = resolveCard(props);
   const agent = resolved.agent;
   const state = resolved.state;
+  const compact = Boolean(props.compact);
   const label = AGENT_LABELS[agent] ?? agent;
   const agentName = agent as AgentName;
 
   const note =
     state === "failed"
-      ? h("p", { className: "mt-2 text-sm text-red-600" }, "Not finished, try again.")
+      ? h(
+          "p",
+          { className: compact ? "mt-1.5 text-xs leading-5 text-red-600" : "mt-2 text-sm text-red-600" },
+          "Not finished, try again.",
+        )
       : state === "timeout"
-        ? h("p", { className: "mt-2 text-sm text-amber-700" }, "Not finished, try again (timed out).")
+        ? h(
+            "p",
+            { className: compact ? "mt-1.5 text-xs leading-5 text-amber-700" : "mt-2 text-sm text-amber-700" },
+            "Not finished, try again (timed out).",
+          )
         : null;
 
   return h(
@@ -169,14 +179,20 @@ export function AgentProgressCard(props: AgentProgressCardProps) {
       "data-testid": "agent-progress-card",
       "data-state": state,
       "data-agent": agentName,
-      className: "rounded-xl border border-slate-200 bg-white p-5 shadow-sm",
+      className: compact
+        ? "rounded-xl border border-slate-200 bg-white p-3 shadow-sm"
+        : "rounded-xl border border-slate-200 bg-white p-5 shadow-sm",
     },
     h(
       "div",
       { className: "flex items-start gap-3" },
       h(
         "span",
-        { className: "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600" },
+        {
+          className: compact
+            ? "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600"
+            : "flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600",
+        },
         iconPaths(agent),
       ),
       h(
@@ -188,10 +204,14 @@ export function AgentProgressCard(props: AgentProgressCardProps) {
         PILL_TEXT[state],
       ),
     ),
-    h("h3", { className: "mt-3.5 text-base font-semibold text-slate-900" }, label),
+    h(
+      "h3",
+      { className: compact ? "mt-2 text-sm font-semibold text-slate-900" : "mt-3.5 text-base font-semibold text-slate-900" },
+      label,
+    ),
     h(
       "p",
-      { className: "mt-1 text-sm leading-6 text-slate-500" },
+      { className: compact ? "mt-0.5 text-xs leading-5 text-slate-500" : "mt-1 text-sm leading-6 text-slate-500" },
       AGENT_DESCRIPTIONS[agent] ?? "Runs one check from the evidence bundle.",
     ),
     note,

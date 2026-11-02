@@ -57,12 +57,12 @@ export function FixChecklist(props: FixChecklistProps) {
     items.length === 0
       ? h(
           "p",
-          { className: "mt-4 text-sm text-slate-600" },
+          { className: "mt-3 text-sm text-slate-600" },
           "No fix actions in this report.",
         )
       : h(
           "ul",
-          { className: "mt-4 space-y-2.5" },
+          { className: "mt-3 grid gap-2.5 sm:grid-cols-2" },
           ...items.map((item, index) => {
             const isChecked = Boolean(checked[index]);
             return h(
@@ -72,7 +72,7 @@ export function FixChecklist(props: FixChecklistProps) {
                 "label",
                 {
                   className:
-                    "flex min-h-[44px] cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 hover:border-slate-300",
+                    "flex min-h-[44px] cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5 hover:border-slate-300",
                 },
                 h("input", {
                   type: "checkbox",
@@ -84,8 +84,8 @@ export function FixChecklist(props: FixChecklistProps) {
                   "span",
                   {
                     className: isChecked
-                      ? "text-sm leading-6 text-slate-400 line-through"
-                      : "text-sm leading-6 text-slate-800",
+                      ? "text-sm leading-5 text-slate-400 line-through"
+                      : "text-sm leading-5 text-slate-800",
                   },
                   item,
                 ),
@@ -98,7 +98,7 @@ export function FixChecklist(props: FixChecklistProps) {
     "section",
     {
       "data-testid": "fix-checklist",
-      className: "rounded-2xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm sm:p-6",
+      className: "rounded-2xl border border-slate-200 bg-white p-4 text-slate-900 shadow-sm",
     },
     h(
       "div",
@@ -106,10 +106,10 @@ export function FixChecklist(props: FixChecklistProps) {
       h(
         "div",
         null,
-        h("h2", { className: "text-lg font-bold" }, "Fix checklist"),
+        h("h2", { className: "text-base font-bold" }, "Fix checklist"),
         h(
           "p",
-          { className: "mt-0.5 text-sm text-slate-500" },
+          { className: "mt-0.5 text-xs leading-5 text-slate-500" },
           "Tick items off as you edit, then re-check before posting.",
         ),
       ),
@@ -135,7 +135,7 @@ export function FixChecklist(props: FixChecklistProps) {
     ),
     h(
       "div",
-      { className: "mt-4", "aria-hidden": true },
+      { className: "mt-3", "aria-hidden": true },
       h(
         "div",
         { className: "h-2 overflow-hidden rounded-full bg-slate-100" },

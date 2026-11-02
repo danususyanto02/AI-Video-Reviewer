@@ -224,7 +224,7 @@ export default function HomePage() {
         h(
           "p",
           { className: "mt-1.5 text-[15px] leading-6 text-slate-500" },
-          "CekDulu reviews claims, visuals, audio, and captions before you post, so you can fix issues while they are still cheap to fix.",
+          "We read the transcript, watch the frames and listen to the audio. You get a list of what to fix before anyone can flag it.",
         ),
         h(
           "div",
@@ -328,6 +328,11 @@ export default function HomePage() {
                 "Upload thumbnail",
               ),
               h("p", { className: "mt-2 text-[13px] text-slate-400" }, "JPG or PNG"),
+              h(
+                "p",
+                { className: "mt-0.5 text-[13px] text-slate-400" },
+                "1080 × 1920 works best for Shorts and Reels",
+              ),
             ),
           ),
         ),
@@ -379,8 +384,8 @@ export default function HomePage() {
           "p",
           { className: "mt-3 flex items-center gap-1.5 text-sm text-slate-500" },
           videoFile
-            ? "Batch analysis. Results usually take a few minutes."
-            : "Select a video to continue. Batch analysis usually takes a few minutes.",
+            ? "Checks run in a batch. Most reports land in a few minutes."
+            : "Select a video to continue.",
         ),
         h("p", { className: "mt-4 text-sm italic leading-6 text-slate-500" }, DISCLAIMER),
       ),
