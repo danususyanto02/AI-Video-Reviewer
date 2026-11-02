@@ -1,0 +1,81 @@
+{
+  "version": "2026-10-30.1",
+  "updated_at": "2026-10-30",
+  "source": "YouTube Community Guidelines (https://support.google.com/youtube/answer/9288567) and YouTube Channel Monetization Policies (https://support.google.com/youtube/answer/1311392)",
+  "rules": [
+    {
+      "id": "youtube-kekerasan",
+      "category": "kekerasan",
+      "guidance": "Bloody violence, torture, or glorified violence may be judged a guidelines violation. Show violence only with clear news, education, or documentary context and avoid needless graphic detail.",
+      "consequence": "The video risks removal and the channel may receive a strike. If it stays up, the video risks limited ads."
+    },
+    {
+      "id": "youtube-seksual",
+      "category": "seksual",
+      "guidance": "Nudity or explicit sexual content, including sexualized thumbnails and titles, risks a guidelines violation. Neutral health education needs clear context so it does not read as sexual content.",
+      "consequence": "The video risks removal and the channel may receive a strike. Borderline content risks limited ads or age restriction."
+    },
+    {
+      "id": "youtube-ujaran-kebencian",
+      "category": "ujaran_kebencian",
+      "guidance": "Speech or symbols attacking a group by ethnicity, religion, race, gender, or another protected trait risks a hate speech judgment. Quotes used for criticism or education need firm context so they do not read as support.",
+      "consequence": "The video risks removal and the channel may receive a strike. Repetition risks channel monetization eligibility."
+    },
+    {
+      "id": "youtube-perundungan",
+      "category": "perundungan",
+      "guidance": "Sustained mockery, threats, or exposure of personal information aimed at a specific person risks a harassment judgment. Criticism of work or public figures still needs to avoid repeated personal attacks.",
+      "consequence": "The video risks removal and the channel may receive a strike. Borderline content risks limited ads."
+    },
+    {
+      "id": "youtube-keselamatan-anak",
+      "category": "keselamatan_anak",
+      "guidance": "Content placing children in dangerous, sexual, or exploitative situations carries high risk under child safety guidelines. Children on screen need safe context and no exposure to risky challenges or interactions.",
+      "consequence": "The video risks removal and the channel may receive a serious strike. Some channel features may be limited and monetization risks removal."
+    },
+    {
+      "id": "youtube-perilaku-berbahaya",
+      "category": "perilaku_berbahaya",
+      "guidance": "Dangerous challenges, easily imitated harmful acts, and self-harm content risk a guidelines violation. When covering these topics, use prevention context and avoid instructions viewers can copy.",
+      "consequence": "The video risks removal and the channel may receive a strike. Borderline content risks limited ads or age restriction."
+    },
+    {
+      "id": "youtube-narkoba-alkohol-senjata",
+      "category": "narkoba_alkohol_senjata",
+      "guidance": "Promotion or sale of drugs, alcohol, cigarettes, vapes, and weapons, including purchase links, risks guidelines and monetization policy violations. Educational coverage needs to stay neutral, with no invitation to buy or use.",
+      "consequence": "The video risks removal and the channel may receive a strike. Related content risks demonetization or limited ads."
+    },
+    {
+      "id": "youtube-judi",
+      "category": "judi",
+      "guidance": "Promotion of gambling sites, bonus codes, or gambling sign-up links risks guidelines and monetization policy violations. Gambling-like game content with no promotion still needs to avoid invitations to bet real money.",
+      "consequence": "The video risks removal and the channel may receive a strike. Video monetization risks removal or limited ads."
+    },
+    {
+      "id": "youtube-misinformasi",
+      "category": "misinformasi",
+      "guidance": "Exaggerated health, finance, or public-issue claims without supporting evidence risk a misinformation judgment. State claims with checkable sources and avoid result promises that sound certain.",
+      "consequence": "The video risks removal when judged harmful. Exaggerated claims on a live video risk limited ads or demonetization."
+    },
+    {
+      "id": "youtube-spam-clickbait-reupload",
+      "category": "spam_clickbait_reupload",
+      "guidance": "Titles, thumbnails, or captions promising things absent from the video, and reuploads of other people's work with no meaningful commentary or transformation, risk spam, deceptive practice, or reused content judgments. Add clear commentary, criticism, or new value to referenced material.",
+      "consequence": "The video risks removal and the channel may receive a strike. Reused content risks rejected monetization or demonetization.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "youtube-grafis-medis",
+      "category": "grafis_medis",
+      "guidance": "Graphic wounds, medical procedures, or body conditions risk being judged disturbing and having playback limited. Medical education context needs an opening warning and no needless graphic close-ups.",
+      "consequence": "The video risks age restriction or limited ads. Display without education context risks removal.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "youtube-privasi-data-pribadi",
+      "category": "privasi_data_pribadi",
+      "guidance": "Showing phone numbers, addresses, identity documents, license plates, or other people's children's faces without proper context risks a privacy violation. Blur or cover personal data before publishing.",
+      "consequence": "The video risks removal after a privacy report and the channel may receive a strike. Repeated reports risk channel impact."
+    }
+  ]
+}

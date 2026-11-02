@@ -1,0 +1,75 @@
+{
+    "overall_recommendation":  "No prominent risk found in this screening, so the video may be considered for publishing after a final check before upload.",
+    "platforms":  [
+                      {
+                          "platform":  "youtube",
+                          "safety_score":  100,
+                          "status":  "aman",
+                          "top_risk":  "",
+                          "findings":  [
+
+                                       ]
+                      },
+                      {
+                          "platform":  "tiktok",
+                          "safety_score":  100,
+                          "status":  "aman",
+                          "top_risk":  "",
+                          "findings":  [
+
+                                       ]
+                      },
+                      {
+                          "platform":  "facebook",
+                          "safety_score":  100,
+                          "status":  "aman",
+                          "top_risk":  "",
+                          "findings":  [
+
+                                       ]
+                      }
+                  ],
+    "copyright":  {
+                      "risk_level":  "rendah",
+                      "segments":  [
+
+                                   ]
+                  },
+    "legal_id":  {
+                     "risk_level":  "rendah",
+                     "themes":  [
+
+                                ],
+                     "disclaimer":  "Initial screening, not a platform decision, not Content ID, and not legal advice."
+                 },
+    "fix_checklist":  [
+
+                      ],
+    "rules_version":  "2026-10-30.1",
+    "agent_statuses":  [
+                           {
+                               "agent":  "youtube",
+                               "status":  "selesai"
+                           },
+                           {
+                               "agent":  "tiktok",
+                               "status":  "selesai"
+                           },
+                           {
+                               "agent":  "facebook",
+                               "status":  "selesai"
+                           },
+                           {
+                               "agent":  "copyright",
+                               "status":  "selesai"
+                           },
+                           {
+                               "agent":  "legal_id",
+                               "status":  "selesai"
+                           },
+                           {
+                               "agent":  "packaging_privacy",
+                               "status":  "selesai"
+                           }
+                       ]
+}

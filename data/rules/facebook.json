@@ -1,0 +1,82 @@
+{
+  "version": "2026-10-30.1",
+  "updated_at": "2026-10-30",
+  "source": "Meta Community Standards (https://transparency.meta.com/policies/community-standards/) and the Facebook Policies Center including monetization policies (https://www.facebook.com/policies_center/)",
+  "rules": [
+    {
+      "id": "facebook-kekerasan",
+      "category": "kekerasan",
+      "guidance": "Graphic violence, threats of violence, or glorified violence may be judged a Community Standards violation. Violence in news context needs clear context with no prominent graphic detail.",
+      "consequence": "The content risks removal. If it stays up, content distribution risks limits and the Page may face restrictions."
+    },
+    {
+      "id": "facebook-seksual",
+      "category": "seksual",
+      "guidance": "Adult nudity, sexual activity, or strongly sexual content risks a Community Standards violation. Sexualized thumbnails and text count together with the video content.",
+      "consequence": "The content risks removal. Repeated violations risk Page distribution limits and Page demonetization."
+    },
+    {
+      "id": "facebook-ujaran-kebencian",
+      "category": "ujaran_kebencian",
+      "guidance": "Attacks on people by ethnicity, religion, race, gender, or another protected trait risk a hate speech judgment. Quotes used for criticism need firm context so they do not read as support.",
+      "consequence": "The content risks removal and Page distribution risks limits. Repeated violations risk Page status impact."
+    },
+    {
+      "id": "facebook-perundungan",
+      "category": "perundungan",
+      "guidance": "Sustained insults, threats, or exposure of personal information aimed at a person risk a harassment judgment. Criticism still needs to avoid repeated personal attacks.",
+      "consequence": "The content risks removal. The Page risks distribution restrictions when violations repeat."
+    },
+    {
+      "id": "facebook-keselamatan-anak",
+      "category": "keselamatan_anak",
+      "guidance": "Content exploiting or endangering children carries high risk under Community Standards. Children need to appear in safe context with clear adult supervision.",
+      "consequence": "The content risks removal and the account or Page may be disabled. Related content distribution may be strictly limited."
+    },
+    {
+      "id": "facebook-perilaku-berbahaya",
+      "category": "perilaku_berbahaya",
+      "guidance": "Easily imitated dangerous acts, injurious challenges, and self-harm content risk Community Standards violations. Discussion of these topics needs prevention context with no imitable instructions.",
+      "consequence": "The content risks removal. Borderline content risks distribution restrictions."
+    },
+    {
+      "id": "facebook-narkoba-alkohol-senjata",
+      "category": "narkoba_alkohol_senjata",
+      "guidance": "Promotion or attempted sale of drugs, alcohol, cigarettes, vapes, and weapons risks Community Standards and monetization policy violations. Educational coverage needs to stay neutral with no invitation to buy or use.",
+      "consequence": "The content risks removal. The Page risks Page demonetization or distribution restrictions."
+    },
+    {
+      "id": "facebook-judi",
+      "category": "judi",
+      "guidance": "Online gambling promotion, sign-up bonuses, or links to gambling sites risk Community Standards violations. Avoid betting invitations and easy access to gambling services in the video, caption, or pinned comment.",
+      "consequence": "The content risks removal and Page distribution risks limits. Repeated violations risk Page monetization impact."
+    },
+    {
+      "id": "facebook-misinformasi",
+      "category": "misinformasi",
+      "guidance": "Health, finance, or public-issue claims judged misleading by fact-checkers risk reduced reach. State claims with checkable sources and avoid result promises that sound certain.",
+      "consequence": "Content distribution risks limits and the Page may receive a context label. Repeated violations risk Page distribution and monetization impact.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "facebook-spam-clickbait-reupload",
+      "category": "spam_clickbait_reupload",
+      "guidance": "Unoriginal content, reuploads with no meaningful transformation, or misleading clickbait risk originality and monetization policy violations. Add clear commentary, criticism, or new value to referenced material.",
+      "consequence": "Content distribution risks limits and the Page risks Page demonetization. Unoriginal content risks removal from recommendations.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "facebook-grafis-medis",
+      "category": "grafis_medis",
+      "guidance": "Graphic wounds, medical procedures, or body conditions risk being judged disturbing and having playback limited. Medical education context needs a warning and no needless graphic close-ups.",
+      "consequence": "The content risks distribution restrictions or a warning screen. Display without context risks removal.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "facebook-privasi-data-pribadi",
+      "category": "privasi_data_pribadi",
+      "guidance": "Showing phone numbers, addresses, identity documents, license plates, or other people's children's data risks a privacy violation. Blur or cover personal data before publishing.",
+      "consequence": "The content risks removal. Repeated violations risk distribution limits and Page status impact."
+    }
+  ]
+}

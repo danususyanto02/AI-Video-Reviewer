@@ -1,0 +1,38 @@
+{
+  "duration_sec": 10,
+  "transcript": [
+    {
+      "start_sec": 0,
+      "end_sec": 3,
+      "text": "Hello everyone, welcome back to our entertainment channel today."
+    },
+    {
+      "start_sec": 3,
+      "end_sec": 7,
+      "text": "We play yesterday's concert performance again, watch to the end."
+    }
+  ],
+  "scenes": [
+    {
+      "start_sec": 0,
+      "end_sec": 10,
+      "description": "Commercial pop music plays loudly through the whole video without commentary, reaction, or meaningful transformation."
+    },
+    {
+      "start_sec": 2,
+      "end_sec": 9,
+      "description": "A famous singer concert clip is played again in full without commentary, reaction, criticism, or meaningful transformation, like a reupload of someone else's material."
+    }
+  ],
+  "keyframe_findings": [
+    {
+      "at_sec": 4,
+      "kind": "watermark",
+      "description": "Another platform watermark is clearly visible in the bottom right corner through the concert clip."
+    }
+  ],
+  "thumbnail_finding": "The thumbnail shows a concert stage with NEW HITS text that matches the concert clip in the video.",
+  "title": "Latest Hits Concert Full Performance",
+  "caption": "Full performance from yesterday's concert, watch to the end.",
+  "extra_context": ""
+}

@@ -1,0 +1,34 @@
+{
+  "duration_sec": 10,
+  "transcript": [
+    {
+      "start_sec": 1,
+      "end_sec": 4.5,
+      "text": "Drink this herb once and you are guaranteed a total cure from diabetes in three days, no doctor medicine needed!"
+    },
+    {
+      "start_sec": 5,
+      "end_sec": 9,
+      "text": "Sign up now at a trusted toto site, pulsa deposit with no fees, one hundred percent new member bonus!"
+    }
+  ],
+  "scenes": [
+    {
+      "start_sec": 0,
+      "end_sec": 10,
+      "description": "A speaker promotes an herb bottle on a kitchen table, then shows a sign-up invitation on a phone screen."
+    }
+  ],
+  "keyframe_findings": [
+    {
+      "at_sec": 7,
+      "kind": "license_plate",
+      "description": "A vehicle license plate is clearly visible with no blur in a street scene in front of a house.",
+      "box": { "x": 0.42, "y": 0.61, "w": 0.18, "h": 0.09 }
+    }
+  ],
+  "thumbnail_finding": "The thumbnail shows an herb bottle with fast-cure claim text and a big bonus invitation.",
+  "title": "Miracle Herb Total Cure, New Member Bonus!",
+  "caption": "The sign-up link is in the comments. New member bonus for registrations today, herb stock is limited.",
+  "extra_context": ""
+}

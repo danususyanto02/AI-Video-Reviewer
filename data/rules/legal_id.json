@@ -1,0 +1,61 @@
+{
+  "version": "2026-10-30.1",
+  "updated_at": "2026-10-30",
+  "source": "Republic of Indonesia Regulation Database (https://peraturan.go.id/), conceptual themes from the Electronic Information and Transactions Law and the Criminal Code for initial screening, with no statutory wording quoted",
+  "rules": [
+    {
+      "id": "hoaks",
+      "category": "hoaks",
+      "guidance": "Presenting unverified reports as fact, especially on health, disasters, or public issues, is at risk under the hoax and false news theme. Check the source first, show date and context, and separate fact, allegation, and opinion clearly.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "ujaran_kebencian_sara",
+      "category": "ujaran_kebencian_sara",
+      "guidance": "Speech attacking or demeaning a group by ethnicity, religion, race, or ancestry is at risk under the SARA hate speech and insult theme. Criticism of policy or behavior still needs to avoid attacks on group identity.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "pencemaran_nama_baik",
+      "category": "pencemaran_nama_baik",
+      "guidance": "Accusing an identifiable person or brand of specific acts with no checkable evidence is at risk under the defamation and insult theme. Keep criticism on documented facts and leave room for a response where possible.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "kesusilaan_pornografi",
+      "category": "kesusilaan_pornografi",
+      "guidance": "Explicit sexual content or content offending decency is at risk under the decency and pornography theme in this Indonesian legal screening. Health education needs neutral language, no explicit display, and clear context.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "judi_online",
+      "category": "judi_online",
+      "guidance": "Promoting, facilitating, or linking to online gambling, including through bonus codes and sign-up invitations, is at risk under the gambling theme in this Indonesian legal screening. Remove invitations, links, and on-screen text pointing to gambling services.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "provokasi_kekerasan_terorisme",
+      "category": "provokasi_kekerasan_terorisme",
+      "guidance": "Invitations to violence, armed resistance, or content glorifying terrorism are at risk under the violent provocation and terrorism theme. Coverage of these issues needs firm news or education context with no call to act.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "klaim_menyesatkan_produk_investasi",
+      "category": "klaim_menyesatkan_produk_investasi",
+      "guidance": "Exaggerated medicine, food, cosmetic, or investment return claims with no checkable basis are at risk under the misleading claims and consumer protection theme. Use claims that match product permits and evidence, avoid result promises, and show limits honestly.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "privasi_data_pribadi",
+      "category": "privasi_data_pribadi",
+      "guidance": "Showing national ID cards, phone numbers, home addresses, license plates, children's data, or recordings of people without proper context is at risk under the privacy and personal data violation theme. Blur or remove that data before publishing.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "endorsement_tanpa_pengungkapan",
+      "category": "endorsement_tanpa_pengungkapan",
+      "guidance": "Content that looks like a paid ad or endorsement with no clear disclosure is at risk under the ad transparency and consumer protection theme. Put a visible ad or paid partnership label in the video, title, or caption.",
+      "perlu_verifikasi": true
+    }
+  ]
+}

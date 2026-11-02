@@ -1,0 +1,27 @@
+{
+  "duration_sec": 8,
+  "transcript": [
+    {
+      "start_sec": 0.5,
+      "end_sec": 4,
+      "text": "Hello everyone, today we cook simple fried rice in our home kitchen."
+    },
+    {
+      "start_sec": 4,
+      "end_sec": 7.5,
+      "text": "The seasoning is garlic, soy sauce, and egg, then we serve it warm for the family."
+    }
+  ],
+  "scenes": [
+    {
+      "start_sec": 0,
+      "end_sec": 8,
+      "description": "A person cooks fried rice in a home kitchen with natural light, with no prominent brands, on-screen text, or other people's material."
+    }
+  ],
+  "keyframe_findings": [],
+  "thumbnail_finding": "The thumbnail shows a plate of fried rice on a wooden table with small text that matches the video content.",
+  "title": "Cooking Simple Fried Rice at Home",
+  "caption": "A home fried rice recipe with ingredients already in the kitchen. Try it at home.",
+  "extra_context": ""
+}

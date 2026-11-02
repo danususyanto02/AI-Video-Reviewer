@@ -1,0 +1,28 @@
+{
+  "case": "legal-risk",
+  "must_include": [
+    { "agent": "youtube", "category": "judi" },
+    { "agent": "youtube", "category": "misinformasi" },
+    { "agent": "youtube", "category": "privasi_data_pribadi" },
+    { "agent": "tiktok", "category": "judi" },
+    { "agent": "tiktok", "category": "misinformasi" },
+    { "agent": "tiktok", "category": "privasi_data_pribadi" },
+    { "agent": "facebook", "category": "judi" },
+    { "agent": "facebook", "category": "misinformasi" },
+    { "agent": "facebook", "category": "privasi_data_pribadi" },
+    { "agent": "legal_id", "category": "judi_online" },
+    { "agent": "legal_id", "category": "klaim_menyesatkan_produk_investasi" },
+    { "agent": "legal_id", "category": "privasi_data_pribadi" },
+    { "agent": "packaging_privacy", "category": "privasi_data_pribadi" }
+  ],
+  "must_exclude_categories": [
+    "musik_komersial",
+    "klip_pihak_ketiga",
+    "watermark_platform_lain",
+    "logo_merek_dominan",
+    "stok_berlisensi",
+    "reupload_tanpa_transformasi",
+    "teks_lirik_berhak_cipta"
+  ],
+  "expected_status_hint": "berisiko_tinggi"
+}

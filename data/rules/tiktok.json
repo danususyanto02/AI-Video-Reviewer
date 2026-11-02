@@ -1,0 +1,81 @@
+{
+  "version": "2026-10-30.1",
+  "updated_at": "2026-10-30",
+  "source": "TikTok Community Guidelines (https://www.tiktok.com/community-guidelines)",
+  "rules": [
+    {
+      "id": "tiktok-kekerasan",
+      "category": "kekerasan",
+      "guidance": "Graphic violence, threats of violence, or glorified violence may be judged a community guidelines violation. Violence in news or education context needs clear context with no prominent graphic detail.",
+      "consequence": "The video risks removal. If it stays up, the video risks becoming ineligible for For You recommendation."
+    },
+    {
+      "id": "tiktok-seksual",
+      "category": "seksual",
+      "guidance": "Nudity, sexual activity, or strongly sexual content risks a guidelines violation. Sexualized thumbnails, on-screen text, and movement count too, not only the main video content.",
+      "consequence": "The video risks removal and the account may be restricted. Borderline content risks becoming ineligible for For You recommendation."
+    },
+    {
+      "id": "tiktok-ujaran-kebencian",
+      "category": "ujaran_kebencian",
+      "guidance": "Attacks on people or groups by ethnicity, religion, race, gender, or another protected trait risk a hate speech judgment. Slurs and hate symbols risk violation even when meant as a joke.",
+      "consequence": "The video risks removal. Repeated violations risk the account being restricted or banned."
+    },
+    {
+      "id": "tiktok-perundungan",
+      "category": "perundungan",
+      "guidance": "Mockery, sustained insults, or invitations to attack a specific person risk a harassment judgment. Reaction or commentary content still needs to avoid repeated personal attacks on other creators.",
+      "consequence": "The video risks removal. Content that stays up risks becoming ineligible for For You recommendation."
+    },
+    {
+      "id": "tiktok-keselamatan-anak",
+      "category": "keselamatan_anak",
+      "guidance": "Content exploiting, endangering, or showing children in unsafe situations carries high risk under child safety guidelines. Children need to appear in safe context with clear adult supervision.",
+      "consequence": "The video risks removal and the account may be banned. Child-related content risks strict distribution limits."
+    },
+    {
+      "id": "tiktok-perilaku-berbahaya",
+      "category": "perilaku_berbahaya",
+      "guidance": "Dangerous challenges, easily imitated harmful acts, and self-harm content risk a guidelines violation. Discussion of suicide or self-harm topics needs support and prevention context, with no instructions or glorification.",
+      "consequence": "The video risks removal. Borderline content risks becoming ineligible for For You recommendation and the account may be restricted."
+    },
+    {
+      "id": "tiktok-narkoba-alkohol-senjata",
+      "category": "narkoba_alkohol_senjata",
+      "guidance": "Promotion, sale, or glorification of drugs, alcohol, cigarettes, vapes, and weapons risks a guidelines violation. Educational coverage needs to stay neutral and avoid invitations to buy, use, or transaction links.",
+      "consequence": "The video risks removal and the account may be restricted. Related content risks becoming ineligible for For You recommendation."
+    },
+    {
+      "id": "tiktok-judi",
+      "category": "judi",
+      "guidance": "Gambling promotion, sign-up bonuses, or betting invitations, including ones disguised as games or giveaways, risk a guidelines violation. Avoid links, codes, or on-screen text pointing to gambling sites.",
+      "consequence": "The video risks removal and becoming ineligible for For You recommendation. Repeated violations risk the account being banned."
+    },
+    {
+      "id": "tiktok-misinformasi",
+      "category": "misinformasi",
+      "guidance": "Misleading health, finance, or public-issue claims that can cause harm risk a misinformation judgment. State claims with checkable sources and avoid result promises that sound certain.",
+      "consequence": "The video risks removal when judged harmful. Other content risks becoming ineligible for For You recommendation.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "tiktok-spam-clickbait-reupload",
+      "category": "spam_clickbait_reupload",
+      "guidance": "Repetitive content, reuploads of other people's work with no new value, or unkept clickbait promises risk spam and unoriginal content judgments. Add clear commentary, reaction, or transformation to referenced material.",
+      "consequence": "The video risks becoming ineligible for For You recommendation. Reuploads with no transformation risk removal."
+    },
+    {
+      "id": "tiktok-grafis-medis",
+      "category": "grafis_medis",
+      "guidance": "Graphic wounds, blood, or medical procedures risk being judged disturbing to viewers. Medical education context needs a warning and no needless graphic close-ups.",
+      "consequence": "The video risks becoming ineligible for For You recommendation. Strongly graphic display risks removal.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "tiktok-privasi-data-pribadi",
+      "category": "privasi_data_pribadi",
+      "guidance": "Showing phone numbers, addresses, identity documents, license plates, or other people's children's data risks a privacy violation. Blur or cover personal data before publishing.",
+      "consequence": "The video risks removal. Repeated violations risk the account being restricted."
+    }
+  ]
+}

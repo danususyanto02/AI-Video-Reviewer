@@ -1,0 +1,21 @@
+{
+  "case": "platform-copyright-risk",
+  "must_include": [
+    { "agent": "youtube", "category": "spam_clickbait_reupload" },
+    { "agent": "tiktok", "category": "spam_clickbait_reupload" },
+    { "agent": "facebook", "category": "spam_clickbait_reupload" },
+    { "agent": "copyright", "category": "musik_komersial" },
+    { "agent": "copyright", "category": "watermark_platform_lain" },
+    { "agent": "copyright", "category": "reupload_tanpa_transformasi" },
+    { "agent": "packaging_privacy", "category": "spam_clickbait_reupload" }
+  ],
+  "must_exclude_categories": [
+    "judi",
+    "misinformasi",
+    "privasi_data_pribadi",
+    "hoaks",
+    "judi_online",
+    "klaim_menyesatkan_produk_investasi"
+  ],
+  "expected_status_hint": "perlu_perbaikan"
+}

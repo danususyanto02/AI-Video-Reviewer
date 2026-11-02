@@ -1,0 +1,45 @@
+{
+  "version": "2026-10-30.1",
+  "updated_at": "2026-10-30",
+  "source": "YouTube Copyright Policies, How YouTube Works (https://www.youtube.com/howyoutubeworks/policies/copyright/) and destination platform copyright policies (screening risk parameters, not a claim decision)",
+  "rules": [
+    {
+      "id": "musik_komersial",
+      "category": "musik_komersial",
+      "guidance": "Background music that sounds like a commercial song or recording, including music recognized from transcript lyrics, is at risk of a possible claim from the rights holder. Replace it with royalty-free audio or music whose usage permission you can show to lower the risk."
+    },
+    {
+      "id": "klip_pihak_ketiga",
+      "category": "klip_pihak_ketiga",
+      "guidance": "Clips from films, series, anime, sports matches, TV news, or concerts shown with no meaningful commentary or criticism are at risk of a possible claim. Cut the segment, shrink its share, or add clear commentary and criticism so the transformation shows.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "watermark_platform_lain",
+      "category": "watermark_platform_lain",
+      "guidance": "A still-visible watermark from another platform or creator suggests the material likely came from another source and is at risk of a possible claim or an unoriginal judgment. Use your own recorded material or crop the watermark area when the material is licensed."
+    },
+    {
+      "id": "logo_merek_dominan",
+      "category": "logo_merek_dominan",
+      "guidance": "Logos or branded material dominant through the whole video with no clear review, news, or parody context risk rights questions and an endorsement impression. Reduce the dominance or add firm review context when the brand is the topic."
+    },
+    {
+      "id": "stok_berlisensi",
+      "category": "stok_berlisensi",
+      "guidance": "Photos, images, or stock clips that look licensed carry risk tied to each provider license terms, including commercial use limits and attribution duties. Keep license proof and add attribution when the terms ask for it.",
+      "perlu_verifikasi": true
+    },
+    {
+      "id": "reupload_tanpa_transformasi",
+      "category": "reupload_tanpa_transformasi",
+      "guidance": "Reuploading someone else's work in full with no commentary, reaction, criticism, or meaningful change carries high risk of a possible claim and a reused content judgment. Add meaningful transformation or use your own material."
+    },
+    {
+      "id": "teks_lirik_berhak_cipta",
+      "category": "teks_lirik_berhak_cipta",
+      "guidance": "Reading, showing, or translating large portions of copyrighted text and lyrics is at risk of a possible claim even without the original audio. Shrink the portion, paraphrase where needed, or summarize in your own words.",
+      "perlu_verifikasi": true
+    }
+  ]
+}
