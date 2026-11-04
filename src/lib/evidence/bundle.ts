@@ -16,6 +16,7 @@ import type {
 } from "../contracts/schemas";
 import type { MetaClient } from "../meta/client";
 import { extractAudio, extractKeyframes } from "./extract";
+import type { KeyframeImage } from "./extract";
 import { EvidenceError, probeDuration, validateDuration } from "./validate";
 
 export { EvidenceError, probeDuration, validateDuration };
@@ -74,18 +75,24 @@ function validKeyframes(items: KeyframeFinding[]): KeyframeFinding[] {
   return out;
 }
 
-function pickKeyframeImage(atSec: number, keyframePaths: string[], input: EvidenceInput): string {
-  if (keyframePaths.length === 0) {
+function pickKeyframeImage(atSec: number, keyframes: KeyframeImage[], input: EvidenceInput): string {
+  if (keyframes.length === 0) {
     return input.thumbnailPath ?? input.videoPath;
   }
-  const index = Math.round(atSec / 3);
-  const clamped = Math.min(Math.max(index, 0), keyframePaths.length - 1);
-  return keyframePaths[clamped] as string;
+  // Frames sit at scene changes, not on a fixed interval, so pick the frame
+  // closest in time to the finding.
+  let nearest = keyframes[0] as KeyframeImage;
+  for (const frame of keyframes) {
+    if (Math.abs(frame.atSec - atSec) < Math.abs(nearest.atSec - atSec)) {
+      nearest = frame;
+    }
+  }
+  return nearest.path;
 }
 
 async function localizeKeyframes(
   findings: KeyframeFinding[],
-  keyframePaths: string[],
+  keyframes: KeyframeImage[],
   input: EvidenceInput,
   meta: MetaClient,
 ): Promise<KeyframeFinding[]> {
@@ -94,7 +101,7 @@ async function localizeKeyframes(
       if (!LOCALIZABLE_KINDS.has(finding.kind)) {
         return [finding];
       }
-      const imagePath = pickKeyframeImage(finding.at_sec, keyframePaths, input);
+      const imagePath = pickKeyframeImage(finding.at_sec, keyframes, input);
       try {
         const localized = await meta.localizeKeyframe(imagePath, finding.kind);
         const valid = validKeyframes(Array.isArray(localized) ? localized : []);
@@ -113,20 +120,24 @@ export async function buildEvidenceBundle(input: EvidenceInput, meta: MetaClient
 
   const tempDir = await mkdtemp(join(tmpdir(), "cekdulu-evidence-"));
   try {
-    const [audioPath, keyframePaths] = await Promise.all([
+    const [audioPath, keyframes] = await Promise.all([
       extractAudio(input.videoPath, tempDir),
       extractKeyframes(input.videoPath, tempDir),
     ]);
 
     const imagePaths: string[] = [
-      ...keyframePaths,
+      ...keyframes.map((frame) => frame.path),
       ...(input.thumbnailPath ? [input.thumbnailPath] : []),
+    ];
+    const frameTimesSec: Array<number | null> = [
+      ...keyframes.map((frame) => frame.atSec),
+      ...(input.thumbnailPath ? [null] : []),
     ];
 
     const transcriptPromise: Promise<TranscriptSegment[]> =
       audioPath === null ? Promise.resolve([]) : meta.transcribe(audioPath);
     const scenesPromise: Promise<SceneSegment[]> = meta.understandVideo(input.videoPath);
-    const imagesPromise: Promise<KeyframeFinding[]> = meta.understandImages(imagePaths);
+    const imagesPromise: Promise<KeyframeFinding[]> = meta.understandImages(imagePaths, frameTimesSec);
 
     const [transcriptResult, scenesResult, imagesResult] = await Promise.allSettled([
       transcriptPromise,
@@ -146,7 +157,7 @@ export async function buildEvidenceBundle(input: EvidenceInput, meta: MetaClient
         ? ""
         : (rawKeyframes[rawKeyframes.length - 1]?.description ?? "");
 
-    const keyframeFindings = await localizeKeyframes(rawKeyframes, keyframePaths, input, meta);
+    const keyframeFindings = await localizeKeyframes(rawKeyframes, keyframes, input, meta);
 
     return EvidenceBundleSchema.parse({
       duration_sec: durationSec,

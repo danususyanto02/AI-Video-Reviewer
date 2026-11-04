@@ -26,7 +26,7 @@ const AGENT_LABELS: Record<string, string> = {
   facebook: "Facebook",
   copyright: "Copyright",
   legal_id: "Indonesian Law",
-  packaging_privacy: "Packaging & Privacy",
+  packaging_privacy: "Title & Privacy",
 };
 
 const AGENT_DESCRIPTIONS: Record<string, string> = {

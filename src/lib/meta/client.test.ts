@@ -1,3 +1,6 @@
+import { writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createMetaClient, MetaError } from "./client";
 
@@ -107,6 +110,57 @@ describe("real mode Responses shape (observed live 2026-10-30)", () => {
     expect(seenAuth).toBe("Bearer test-key-not-real");
     expect((seenBody as { model?: string }).model).toBe("muse-spark-1.3");
     expect(Array.isArray((seenBody as { input?: unknown }).input)).toBe(true);
+  });
+});
+
+describe("real mode images via Responses (base64 lampiran)", () => {
+  it("mengirim frame sebagai input_image data URL dan men-snap at_sec ke label terdekat", async () => {
+    const framePath = join(tmpdir(), `cekdulu-client-test-${process.pid}.jpg`);
+    await writeFile(framePath, Buffer.from([0xff, 0xd8, 0xff, 0xd9]));
+    let seenUrl = "";
+    let seenBody: unknown;
+    const fetchFn = (async (url: unknown, init: { body?: string }) => {
+      seenUrl = String(url);
+      seenBody = JSON.parse(String(init?.body ?? "{}")) as unknown;
+      return new Response(
+        JSON.stringify({
+          object: "response",
+          status: "completed",
+          output: [
+            {
+              type: "message",
+              role: "assistant",
+              content: [
+                {
+                  type: "output_text",
+                  text: '[{"at_sec":7,"kind":"license_plate","description":"A plate is visible."}]',
+                },
+              ],
+            },
+          ],
+        }),
+        { status: 200, headers: { "content-type": "application/json" } },
+      );
+    }) as unknown as typeof fetch;
+    const client = createMetaClient({
+      forceMock: false,
+      apiKey: "test-key-not-real",
+      baseUrl: "https://api.meta.ai/v1",
+      fetchFn,
+      retryDelayMs: 0,
+    });
+    const findings = await client.understandImages([framePath], [5]);
+    expect(seenUrl).toBe("https://api.meta.ai/v1/responses");
+    const body = seenBody as {
+      input?: Array<{ content?: Array<{ type?: string; image_url?: string; text?: string }> }>;
+    };
+    const parts = body.input?.[0]?.content ?? [];
+    const imagePart = parts.find((part) => part.type === "input_image");
+    expect(imagePart?.image_url?.startsWith("data:image/jpeg;base64,")).toBe(true);
+    expect(parts.some((part) => part.text === "Frame at 5 seconds:")).toBe(true);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.at_sec).toBe(5);
+    expect(findings[0]?.kind).toBe("license_plate");
   });
 });
 

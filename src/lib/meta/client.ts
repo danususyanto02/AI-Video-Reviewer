@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import { extname } from "node:path";
 import { mockEvidenceBundle } from "../contracts/fixtures";
 import { KeyframeFinding, SceneSegment, TranscriptSegment } from "../contracts/schemas";
 import type {
@@ -14,7 +16,10 @@ export type { MetaErrorCode, MetaTimeouts } from "./config";
 export interface MetaClient {
   transcribe(audioPath: string): Promise<TranscriptSegmentType[]>;
   understandVideo(videoPath: string): Promise<SceneSegmentType[]>;
-  understandImages(imagePaths: string[]): Promise<KeyframeFindingType[]>;
+  understandImages(
+    imagePaths: string[],
+    frameTimesSec?: Array<number | null>,
+  ): Promise<KeyframeFindingType[]>;
   localizeKeyframe(imagePath: string, concept: string): Promise<KeyframeFindingType[]>;
   reasonJson(systemPrompt: string, userPayload: unknown): Promise<unknown>;
 }
@@ -32,16 +37,59 @@ export interface CreateMetaClientOptions {
 // base URL https://api.meta.ai/v1, auth "Authorization: Bearer <key>",
 // Responses POST /responses {model: "muse-spark-1.3", input: [...]},
 // batch transcribe POST /asr/transcribe responding {transcript, turns[]},
-// SAM via /responses with model "sam-3.1". Still perlu-verifikasi:
-// file-upload transport for transcribe/SAM with local file paths, the
-// video/image understanding endpoints, and structured-output shape.
+// SAM via /responses with model "sam-3.1".
+// Images and SAM localization go through /responses with the image attached
+// as a base64 data URL (input_image), never as a local file path. Still
+// perlu-verifikasi: transcribe and video understanding still send local
+// file paths, and their endpoints are not yet proven live.
 const PATHS = {
   transcribe: "/asr/transcribe",
   video: "/video/understand",
-  images: "/images/understand",
-  sam: "/sam/localize",
   reason: "/responses",
 } as const;
+
+const IMAGE_BATCH_SIZE = 16;
+const IMAGE_BATCH_CONCURRENCY = 3;
+
+async function imageDataUrl(imagePath: string): Promise<string> {
+  const bytes = await readFile(imagePath);
+  const ext = extname(imagePath).toLowerCase();
+  const mime = ext === ".png" ? "image/png" : ext === ".webp" ? "image/webp" : "image/jpeg";
+  return `data:${mime};base64,${bytes.toString("base64")}`;
+}
+
+function parseResponsesPayload(payload: unknown): unknown {
+  if (isRecord(payload) && typeof payload.output_text === "string") {
+    try {
+      return JSON.parse(payload.output_text) as unknown;
+    } catch {
+      return payload.output_text;
+    }
+  }
+  // Observed live shape: output[] -> message -> content[] -> output_text.
+  if (isRecord(payload) && Array.isArray(payload.output)) {
+    for (const item of payload.output) {
+      if (!isRecord(item) || item.type !== "message" || !Array.isArray(item.content)) continue;
+      for (const part of item.content) {
+        if (!isRecord(part) || part.type !== "output_text" || typeof part.text !== "string") continue;
+        try {
+          return JSON.parse(part.text) as unknown;
+        } catch {
+          return part.text;
+        }
+      }
+    }
+    return payload.output;
+  }
+  if (typeof payload === "string") {
+    try {
+      return JSON.parse(payload) as unknown;
+    } catch {
+      return payload;
+    }
+  }
+  return payload;
+}
 
 function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
@@ -249,17 +297,101 @@ export function createMetaClient(opts: CreateMetaClientOptions = {}): MetaClient
       const payload = await requestJson(PATHS.video, { video_path: videoPath }, timeouts.video);
       return mapScenes(payload);
     },
-    async understandImages(imagePaths: string[]) {
-      const payload = await requestJson(PATHS.images, { image_paths: imagePaths }, timeouts.image);
-      return mapKeyframes(payload);
+    async understandImages(imagePaths: string[], frameTimesSec?: Array<number | null>) {
+      if (imagePaths.length === 0) return [];
+
+      type Batch = Array<{ path: string; atSec: number | null }>;
+      const batches: Batch[] = [];
+      for (let start = 0; start < imagePaths.length; start += IMAGE_BATCH_SIZE) {
+        batches.push(
+          imagePaths
+            .slice(start, start + IMAGE_BATCH_SIZE)
+            .map((path, offset) => ({ path, atSec: frameTimesSec?.[start + offset] ?? null })),
+        );
+      }
+
+      async function runBatch(batch: Batch): Promise<KeyframeFindingType[]> {
+        const content: Array<Record<string, string>> = [
+          {
+            type: "input_text",
+            text: [
+              "You are shown frames from one video. Each image is preceded by a label: either its second in the video, or Thumbnail.",
+              "Return ONLY a JSON array, no other text. One item per notable frame: {\"at_sec\": number, \"kind\": string, \"description\": string}.",
+              "kind may only be: logo, watermark, license_plate, document, child, sensitive_object, third_party_clip, other.",
+              "description states plainly what is visible in that frame: people, products, brand logos, on-screen text, personal data.",
+              "For the Thumbnail image use at_sec 0. If a frame shows nothing notable, leave it out.",
+            ].join("\n"),
+          },
+        ];
+        for (const frame of batch) {
+          content.push({
+            type: "input_text",
+            text: frame.atSec === null ? "Thumbnail image:" : `Frame at ${frame.atSec} seconds:`,
+          });
+          content.push({ type: "input_image", image_url: await imageDataUrl(frame.path) });
+        }
+        const payload = await requestJson(
+          PATHS.reason,
+          {
+            model: "muse-spark-1.3",
+            input: [{ type: "message", role: "user", content }],
+          },
+          timeouts.image,
+        );
+        const findings = mapKeyframes(parseResponsesPayload(payload));
+        const labeledTimes = batch
+          .map((frame) => frame.atSec)
+          .filter((value): value is number => typeof value === "number");
+        // Snap reported seconds to the nearest labeled frame so a finding
+        // never points at a second the model was not shown.
+        return findings.map((finding) => {
+          if (finding.at_sec <= 0 || labeledTimes.length === 0) return finding;
+          let nearest = labeledTimes[0] as number;
+          for (const time of labeledTimes) {
+            if (Math.abs(time - finding.at_sec) < Math.abs(nearest - finding.at_sec)) {
+              nearest = time;
+            }
+          }
+          return { ...finding, at_sec: nearest };
+        });
+      }
+
+      const results: KeyframeFindingType[][] = new Array(batches.length);
+      let nextBatch = 0;
+      async function worker(): Promise<void> {
+        while (nextBatch < batches.length) {
+          const index = nextBatch;
+          nextBatch += 1;
+          results[index] = await runBatch(batches[index] as Batch);
+        }
+      }
+      await Promise.all(
+        Array.from({ length: Math.min(IMAGE_BATCH_CONCURRENCY, batches.length) }, () => worker()),
+      );
+      return results.flat();
     },
     async localizeKeyframe(imagePath: string, concept: string) {
       const payload = await requestJson(
-        PATHS.sam,
-        { image_path: imagePath, concept },
+        PATHS.reason,
+        {
+          model: "sam-3.1",
+          input: [
+            {
+              type: "message",
+              role: "user",
+              content: [
+                {
+                  type: "input_text",
+                  text: `Locate "${concept}" in this image. Return ONLY a JSON array, no other text: [{"at_sec": 0, "kind": "${concept}", "description": string, "box": {"x": number, "y": number, "w": number, "h": number}}]. Coordinates are fractions of the image width and height. If it is not present, return [].`,
+                },
+                { type: "input_image", image_url: await imageDataUrl(imagePath) },
+              ],
+            },
+          ],
+        },
         timeouts.sam,
       );
-      return mapKeyframes(payload);
+      return mapKeyframes(parseResponsesPayload(payload));
     },
     async reasonJson(systemPrompt: string, userPayload: unknown) {
       const payload = await requestJson(
@@ -281,36 +413,7 @@ export function createMetaClient(opts: CreateMetaClientOptions = {}): MetaClient
         },
         timeouts.reason,
       );
-      if (isRecord(payload) && typeof payload.output_text === "string") {
-        try {
-          return JSON.parse(payload.output_text) as unknown;
-        } catch {
-          return payload.output_text;
-        }
-      }
-      // Observed live shape: output[] -> message -> content[] -> output_text.
-      if (isRecord(payload) && Array.isArray(payload.output)) {
-        for (const item of payload.output) {
-          if (!isRecord(item) || item.type !== "message" || !Array.isArray(item.content)) continue;
-          for (const part of item.content) {
-            if (!isRecord(part) || part.type !== "output_text" || typeof part.text !== "string") continue;
-            try {
-              return JSON.parse(part.text) as unknown;
-            } catch {
-              return part.text;
-            }
-          }
-        }
-        return payload.output;
-      }
-      if (typeof payload === "string") {
-        try {
-          return JSON.parse(payload) as unknown;
-        } catch {
-          return payload;
-        }
-      }
-      return payload;
+      return parseResponsesPayload(payload);
     },
   };
 }

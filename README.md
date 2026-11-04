@@ -12,7 +12,7 @@ Platforms flag videos after they go up. By then you have already lost the upload
 
 ## How it works
 
-First the app builds an evidence bundle from your upload. It transcribes the speech, describes the scenes, samples keyframes, and keeps your title, caption, and thumbnail text alongside.
+First the app builds an evidence bundle from your upload. It transcribes the speech, describes the scenes, takes a frame whenever the picture changes, and keeps your title, caption, and thumbnail text alongside.
 
 Six checks then read that same bundle at the same time. There is one for each platform, one for copyright, one for Indonesian legal themes, and one for packaging and privacy. A check can only report what it can point at, so every finding carries a timestamp and the exact words or frame it came from.
 

@@ -67,7 +67,7 @@ const AGENT_LABELS: Record<string, string> = {
   facebook: "Facebook",
   copyright: "Copyright",
   legal_id: "Indonesian Law",
-  packaging_privacy: "Packaging & Privacy",
+  packaging_privacy: "Title & Privacy",
 };
 
 function renderPartialBanner(report: FinalReport) {
@@ -162,6 +162,51 @@ function renderSummary(report: FinalReport) {
   );
 }
 
+function renderProgressBar(progresses: AgentProgress[]) {
+  const done = progresses.filter((entry) => entry.state === "done").length;
+  const running = progresses.filter((entry) => entry.state === "running").length;
+  const failed = progresses.filter(
+    (entry) => entry.state === "failed" || entry.state === "timeout",
+  ).length;
+  const total = progresses.length;
+  const percent = total === 0 ? 0 : Math.round((done / total) * 100);
+  const parts = [`${done} of ${total} checks done`];
+  if (running > 0) parts.push(`${running} running`);
+  if (failed > 0) parts.push(`${failed} not finished`);
+  return h(
+    "div",
+    { key: "progress", className: "mt-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" },
+    h(
+      "div",
+      { className: "flex flex-wrap items-baseline justify-between gap-2" },
+      h("p", { className: "text-sm font-semibold text-slate-900" }, parts.join(" · ")),
+      h("p", { className: "text-sm font-bold text-blue-700" }, `${percent}%`),
+    ),
+    h(
+      "div",
+      {
+        role: "progressbar",
+        "aria-label": "Analysis progress",
+        "aria-valuemin": 0,
+        "aria-valuemax": 100,
+        "aria-valuenow": percent,
+        className: "mt-2.5 h-2.5 overflow-hidden rounded-full bg-slate-100",
+      },
+      h("div", {
+        className: "h-full rounded-full bg-blue-600 transition-all duration-500",
+        style: { width: `${percent}%` },
+      }),
+    ),
+    done === 0 && running === 0
+      ? h(
+          "p",
+          { className: "mt-2.5 text-[13px] leading-5 text-slate-500" },
+          "Preparing your video first: pulling out the sound and the frames. The six checks start right after this, so this step can take a little while.",
+        )
+      : null,
+  );
+}
+
 function renderAgentStatus(progresses: AgentProgress[], compact = false) {
   return h(
     "section",
@@ -169,12 +214,12 @@ function renderAgentStatus(progresses: AgentProgress[], compact = false) {
     h(
       "h2",
       { id: "status-agen", className: compact ? "text-lg font-bold text-slate-900" : "text-xl font-bold text-slate-900" },
-      "Agent status",
+      "Checks",
     ),
     h(
       "p",
       { className: compact ? "mt-0.5 text-xs leading-5 text-slate-500" : "mt-1 text-sm text-slate-500" },
-      "Six checks run from the same evidence bundle. Sections that are not finished stay marked on this report.",
+      "Six checks look at the same video material. If one does not finish, its part of the report is marked.",
     ),
     h(
       "div",
@@ -198,11 +243,11 @@ function renderReportSections(report: FinalReport, progresses: AgentProgress[]) 
     h(
       "section",
       { key: "platforms", className: "mt-6", "aria-labelledby": "hasil-platform" },
-      h("h2", { id: "hasil-platform", className: "text-lg font-bold text-slate-900" }, "Detailed findings"),
+      h("h2", { id: "hasil-platform", className: "text-lg font-bold text-slate-900" }, "What we found"),
       h(
         "p",
         { className: "mt-0.5 text-xs leading-5 text-slate-500" },
-        "Findings are grouped by check. Each item shows severity, where it appears, and the evidence behind it.",
+        "Grouped by check. Each problem shows how serious it is, where it appears, and the exact words or frame it came from.",
       ),
       h(
         "div",
@@ -333,7 +378,7 @@ export default function ReportPage(props: {
     if (report) {
       bodyChildren.push(...renderReportSections(report, progresses));
     } else {
-      bodyChildren.push(renderAgentStatus(progresses));
+      bodyChildren.push(renderProgressBar(progresses), renderAgentStatus(progresses));
     }
   } else if (!displayError) {
     bodyChildren.push(

@@ -177,6 +177,9 @@ describe("sambungan UI ke orkestrasi nyata", () => {
     expect(cards).toHaveLength(6);
     expect(cards.filter((c) => c.getAttribute("data-state") === "done")).toHaveLength(2);
     expect(cards.filter((c) => c.getAttribute("data-state") === "running")).toHaveLength(4);
+    const progressBar = screen.getByRole("progressbar", { name: /analysis progress/i });
+    expect(progressBar.getAttribute("aria-valuenow")).toBe("33");
+    expect(screen.getByText(/2 of 6 checks done/i)).toBeInTheDocument();
     expect(screen.queryByTestId("platform-card")).not.toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledTimes(1);
 

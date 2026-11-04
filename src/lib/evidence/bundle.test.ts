@@ -385,9 +385,9 @@ describe("real-media proof", () => {
     }
 
     const frames = await extractKeyframes(testVideoPath, testDir);
-    console.info(`[evidence-test] real-media keyframes=${frames.join(",")}`);
+    console.info(`[evidence-test] real-media keyframes=${frames.map((f) => `${f.path}@${f.atSec}`).join(",")}`);
     expect(frames.length).toBeGreaterThanOrEqual(1);
-    for (const f of frames) expect(existsSync(f)).toBe(true);
+    for (const f of frames) expect(existsSync(f.path)).toBe(true);
   });
 });
 
@@ -450,9 +450,9 @@ describe("FIX-1 regression: video 1 detik", () => {
   it("extractKeyframes pada video 1 detik menghasilkan minimal 1 keyframe", async (ctx) => {
     if (!shortVideoReady) ctx.skip(`video uji 1 detik tidak tersedia: ${shortSkipReason}`);
     const frames = await extractKeyframes(shortVideoPath, join(shortDir, "kf-out"));
-    console.info(`[evidence-test] FIX-1 keyframes 1 detik=${frames.join(",")}`);
+    console.info(`[evidence-test] FIX-1 keyframes 1 detik=${frames.map((f) => `${f.path}@${f.atSec}`).join(",")}`);
     expect(frames.length).toBeGreaterThanOrEqual(1);
-    for (const f of frames) expect(existsSync(f)).toBe(true);
+    for (const f of frames) expect(existsSync(f.path)).toBe(true);
   }, 60_000);
 
   it("buildEvidenceBundle pada video 1 detik lengkap dan understandImages menerima keyframe", async (ctx) => {
@@ -466,5 +466,75 @@ describe("FIX-1 regression: video 1 detik", () => {
     expect(parsed.duration_sec).toBeGreaterThan(0.5);
     expect(parsed.duration_sec).toBeLessThan(1.6);
     expect(understandImagesArgs[0]?.length ?? 0).toBeGreaterThanOrEqual(1);
+  }, 60_000);
+});
+
+// ---------------------------------------------------------------------------
+// Scene-change keyframes: frame diambil saat gambar berubah, bukan sampling
+// berkala (pengganti fps=1/3). Video uji: potongan keras di detik 1.5.
+// ---------------------------------------------------------------------------
+
+describe("scene-change keyframes", () => {
+  let cutDir = "";
+  let cutVideoPath = "";
+  let cutVideoReady = false;
+  let cutSkipReason = "";
+
+  beforeAll(async () => {
+    cutDir = join(tmpdir(), `cekdulu-evidence-cut-${process.pid}-${Date.now()}`);
+    await mkdir(cutDir, { recursive: true });
+    cutVideoPath = join(cutDir, "video-cut.mp4");
+    const ffmpeg = resolveFfmpegPath();
+    try {
+      await execFileAsync(
+        ffmpeg,
+        [
+          "-y",
+          "-f", "lavfi", "-i", "testsrc=duration=1.5:size=320x240:rate=10",
+          "-f", "lavfi", "-i", "smptebars=duration=1.5:size=320x240:rate=10",
+          "-filter_complex", "[0:v][1:v]concat=n=2:v=1:a=0[v]",
+          "-map", "[v]", "-c:v", "libx264", "-pix_fmt", "yuv420p",
+          cutVideoPath,
+        ],
+        { timeout: 60_000, windowsHide: true },
+      );
+      cutVideoReady = existsSync(cutVideoPath);
+      if (!cutVideoReady) cutSkipReason = "output video potongan tidak terbentuk";
+    } catch (err) {
+      cutSkipReason = `ffmpeg tidak dapat membuat video potongan: ${err instanceof Error ? err.message : String(err)}`;
+    }
+  }, 120_000);
+
+  afterAll(async () => {
+    if (cutDir) {
+      await rm(cutDir, { recursive: true, force: true }).catch(() => undefined);
+    }
+  });
+
+  it("menghasilkan frame di sekitar potongan adegan (detik 1.5), bukan hanya frame awal", async (ctx) => {
+    if (!cutVideoReady) ctx.skip(`video potongan tidak tersedia: ${cutSkipReason}`);
+    const frames = await extractKeyframes(cutVideoPath, join(cutDir, "kf-out"));
+    expect(frames.length).toBeGreaterThanOrEqual(2);
+    expect(frames.some((f) => f.atSec >= 1 && f.atSec <= 2.2)).toBe(true);
+    for (const f of frames) expect(existsSync(f.path)).toBe(true);
+  }, 60_000);
+
+  it("video diam 3 detik tetap menghasilkan frame tiap detik", async (ctx) => {
+    if (!cutVideoReady) ctx.skip(`ffmpeg tidak tersedia: ${cutSkipReason}`);
+    const stillPath = join(cutDir, "video-still.mp4");
+    const ffmpeg = resolveFfmpegPath();
+    await execFileAsync(
+      ffmpeg,
+      [
+        "-y",
+        "-f", "lavfi", "-i", "color=c=black:size=320x240:rate=10:duration=3",
+        "-c:v", "libx264", "-pix_fmt", "yuv420p",
+        stillPath,
+      ],
+      { timeout: 60_000, windowsHide: true },
+    );
+    const frames = await extractKeyframes(stillPath, join(cutDir, "kf-still"));
+    expect(frames.length).toBeGreaterThanOrEqual(3);
+    expect(frames.some((f) => f.atSec >= 1.8)).toBe(true);
   }, 60_000);
 });

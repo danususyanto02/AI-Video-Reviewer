@@ -119,42 +119,115 @@ export async function extractAudio(videoPath: string, outDir: string): Promise<s
   return existsSync(outputPath) ? outputPath : null;
 }
 
-async function listKeyframeFiles(outDir: string): Promise<string[]> {
-  const entries = await readdir(outDir);
+export type KeyframeImage = {
+  path: string;
+  atSec: number;
+};
+
+// Frames are taken every second, plus the first frame, plus extra frames
+// where the picture changes (scene cuts). One frame per second keeps short
+// moments (a license plate shown briefly) from slipping between checks,
+// and scene frames catch cuts that fall between seconds.
+const SCENE_THRESHOLD = 0.4;
+const MAX_KEYFRAMES = 210;
+
+async function listFrameFiles(dir: string, prefix: string): Promise<string[]> {
+  const entries = await readdir(dir);
+  const pattern = new RegExp(`^${prefix}_\\d+\\.jpg$`, "i");
   return entries
-    .filter((name) => /^keyframe_\d+\.jpg$/i.test(name))
+    .filter((name) => pattern.test(name))
     .sort((a, b) => a.localeCompare(b))
-    .map((name) => join(outDir, name));
+    .map((name) => join(dir, name));
 }
 
-export async function extractKeyframes(videoPath: string, outDir: string): Promise<string[]> {
+function parseShowinfoTimes(stderr: string): number[] {
+  const times: number[] = [];
+  const pattern = /pts_time:([0-9]+(?:\.[0-9]+)?)/g;
+  let match: RegExpExecArray | null;
+  while ((match = pattern.exec(stderr)) !== null) {
+    const value = Number(match[1]);
+    if (Number.isFinite(value)) times.push(value);
+  }
+  return times;
+}
+
+export async function extractKeyframes(videoPath: string, outDir: string): Promise<KeyframeImage[]> {
   await mkdir(outDir, { recursive: true });
   const ffmpeg = resolveFfmpegPath();
-  const pattern = join(outDir, "keyframe_%04d.jpg");
-  const args = ["-y", "-i", videoPath, "-vf", "fps=1/3", "-q:v", "2", pattern];
 
-  const result = await runBinary(ffmpeg, args, EXTRACT_TIMEOUT_MS);
-  const sampled = await listKeyframeFiles(outDir);
-  if (result.code === 0 && sampled.length > 0) {
-    return sampled;
+  // The first frame always counts: a video with no scene change still has
+  // exactly one picture worth checking.
+  const firstPath = join(outDir, "keyframe_0001.jpg");
+  await runBinary(
+    ffmpeg,
+    ["-y", "-i", videoPath, "-frames:v", "1", "-q:v", "2", firstPath],
+    EXTRACT_TIMEOUT_MS,
+  );
+  if (!existsSync(firstPath)) {
+    throw new EvidenceError("extract_failed", "Keyframe extraction failed.");
   }
 
-  if (sampled.length === 0) {
-    // Sampling 1 frame per 3 detik menghasilkan nol frame pada video yang
-    // lebih pendek dari interval itu; ambil frame pertama sebagai keyframe.
-    const singlePath = join(outDir, "keyframe_0001.jpg");
-    await runBinary(
-      ffmpeg,
-      ["-y", "-i", videoPath, "-frames:v", "1", "-q:v", "2", singlePath],
-      EXTRACT_TIMEOUT_MS,
-    );
-    const fallback = await listKeyframeFiles(outDir);
-    if (fallback.length > 0) {
-      return fallback;
-    }
+  const candidates: KeyframeImage[] = [{ path: firstPath, atSec: 0 }];
+
+  const sceneDir = join(outDir, "scene");
+  await mkdir(sceneDir, { recursive: true });
+  const scenePattern = join(sceneDir, "scene_%04d.jpg");
+  const sceneResult = await runBinary(
+    ffmpeg,
+    [
+      "-y", "-i", videoPath,
+      "-vf", `select='gt(scene,${SCENE_THRESHOLD})',showinfo`,
+      "-vsync", "vfr",
+      "-q:v", "2", scenePattern,
+    ],
+    EXTRACT_TIMEOUT_MS,
+  );
+  if (sceneResult.code === 0) {
+    const sceneFiles = await listFrameFiles(sceneDir, "scene");
+    const times = parseShowinfoTimes(sceneResult.stderr);
+    sceneFiles.forEach((path, index) => {
+      candidates.push({ path, atSec: times[index] ?? 0 });
+    });
   }
 
-  // Spawn/binary absen sudah menjadi extract_failed lewat runBinary; sampai
-  // di sini berarti tidak ada keyframe yang dapat diekstrak sama sekali.
-  throw new EvidenceError("extract_failed", "Keyframe extraction failed.");
+  const secondDir = join(outDir, "second");
+  await mkdir(secondDir, { recursive: true });
+  const secondPattern = join(secondDir, "second_%04d.jpg");
+  const secondResult = await runBinary(
+    ffmpeg,
+    [
+      "-y", "-i", videoPath,
+      "-vf", "fps=1,showinfo",
+      "-q:v", "2", secondPattern,
+    ],
+    EXTRACT_TIMEOUT_MS,
+  );
+  if (secondResult.code === 0) {
+    const secondFiles = await listFrameFiles(secondDir, "second");
+    const times = parseShowinfoTimes(secondResult.stderr);
+    secondFiles.forEach((path, index) => {
+      candidates.push({ path, atSec: times[index] ?? index });
+    });
+  }
+
+  candidates.sort((a, b) => a.atSec - b.atSec);
+  const deduped: KeyframeImage[] = [];
+  for (const candidate of candidates) {
+    const last = deduped[deduped.length - 1];
+    if (last && candidate.atSec - last.atSec < 0.5) continue;
+    deduped.push(candidate);
+  }
+
+  if (deduped.length <= MAX_KEYFRAMES) {
+    return deduped;
+  }
+  // Very fast-cut videos can produce hundreds of scene frames. Keep an even
+  // spread across the whole video so the cap never drops the ending.
+  const spread: KeyframeImage[] = [];
+  const step = (deduped.length - 1) / (MAX_KEYFRAMES - 1);
+  for (let i = 0; i < MAX_KEYFRAMES; i += 1) {
+    const item = deduped[Math.round(i * step)];
+    if (item) spread.push(item);
+  }
+  return spread;
 }
